@@ -19,13 +19,16 @@ Considering an API Rest solution
   - ~~DELETE~~(Not removing product from catalog) 
 
 ## Considerations for production environment
+### Architecture
+- CQRS + Event Driven? Interesting for Inventory & Catalog management(Future)
+
 ### Persistence abstraction
 - In memory (MVP)
-- Allow future implementations
+- Allow future implementations (Distr. cache, DDBB, etc)
 
 ### Presentation
 - API Rest
-- Allow other software interactions (SOAP, etc.)
+- Allow other software interactions (SOAP, etc.) By architecture
 
 ### Monitoring
 - Consider monitoring metrics: Actuator

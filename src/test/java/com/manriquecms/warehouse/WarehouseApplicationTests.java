@@ -1,4 +1,4 @@
-package com.manriquecms.assignment;
+package com.manriquecms.warehouse;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

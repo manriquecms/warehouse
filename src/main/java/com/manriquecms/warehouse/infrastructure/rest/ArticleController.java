@@ -14,13 +14,13 @@ public class ArticleController {
     ArticlesQuery articlesQuery;
 
     //@RequestMapping(value = "/articles", method = RequestMethod.GET)
-    @GetMapping("/articles")
-    List<Article> getAll(){
+    @RequestMapping(value = "/articles", method = RequestMethod.GET)
+    public List<Article> getAllArticles(){
         return articlesQuery.getAllArticles();
     }
 
     @RequestMapping(value = "/articles/{id}", method = RequestMethod.GET)
-    Article getById(@PathVariable String id) throws ArticleNotFoundException {
+    public Article getArticleById(@PathVariable String id) throws ArticleNotFoundException {
         return articlesQuery.getArticleById(id);
     }
 }

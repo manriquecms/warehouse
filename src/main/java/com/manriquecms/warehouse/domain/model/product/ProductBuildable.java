@@ -3,26 +3,24 @@ package com.manriquecms.warehouse.domain.model.product;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
-@Entity
 public class ProductBuildable {
-    @Id
-    private String productId;
+    private Product product;
     private Integer quantity;
 
     public ProductBuildable() {
     }
 
-    public ProductBuildable(String productId, Integer quantity) {
-        this.productId = productId;
+    public ProductBuildable(Product product, Integer quantity) {
+        this.product = product;
         this.quantity = quantity;
     }
 
-    public String getProductId() {
-        return productId;
+    public Product getProduct() {
+        return product;
     }
 
-    public void setProductId(String productId) {
-        this.productId = productId;
+    public void setProduct(Product product) {
+        this.product = product;
     }
 
     public Integer getQuantity() {

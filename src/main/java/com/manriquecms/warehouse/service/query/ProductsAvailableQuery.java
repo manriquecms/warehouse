@@ -26,10 +26,18 @@ public class ProductsAvailableQuery {
         return StreamSupport.stream(productRepository.findAll().spliterator(),false)
                 .map(p -> {
                     return new ProductBuildable(
-                            p.getName(),
+                            p,
                             howManyItemsCanIBuildOfProduct(p)
                     );
                 }).collect(Collectors.toList());
+    }
+
+    public ProductBuildable getAvailableProduct(String productId) {
+        Product product = productRepository.findById(productId).orElseThrow();
+        return new ProductBuildable(
+                product,
+                howManyItemsCanIBuildOfProduct(product)
+        );
     }
 
     private Integer howManyItemsCanIBuildOfProduct(Product product){

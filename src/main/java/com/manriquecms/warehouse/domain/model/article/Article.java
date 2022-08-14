@@ -54,7 +54,7 @@ public class Article {
         this.stock = assignStock(stock);
     }
 
-    public static Integer assignStock(String quantity)
+    public Integer assignStock(String quantity)
             throws InitializingStockNegativeNotAllowed, NotNumberFormatForStockQuantity {
         try {
             return assignStock(Integer.parseInt(quantity));
@@ -63,7 +63,7 @@ public class Article {
         }
     }
 
-    public static Integer assignStock(Integer quantity) throws InitializingStockNegativeNotAllowed {
+    public Integer assignStock(Integer quantity) throws InitializingStockNegativeNotAllowed {
         if (quantity >= 0) {
             return quantity;
         } else {

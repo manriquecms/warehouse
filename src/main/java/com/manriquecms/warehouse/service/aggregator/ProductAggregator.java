@@ -5,11 +5,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class CatalogAggregator {
+public class ProductAggregator {
     @Autowired
     private ProductRepository productRepository;
 
-    public CatalogAggregator(ProductRepository productRepository) {
+    public ProductAggregator(ProductRepository productRepository) {
         this.productRepository = productRepository;
     }
 

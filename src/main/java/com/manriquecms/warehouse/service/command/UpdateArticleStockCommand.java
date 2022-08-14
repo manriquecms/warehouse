@@ -1,22 +1,16 @@
 package com.manriquecms.warehouse.service.command;
 
-public class UpdateArticleCommand {
+public class UpdateArticleStockCommand {
     private String art_id;
-    private String name;
     private Integer stock;
 
-    public UpdateArticleCommand(String art_id, String name, Integer stock) {
+    public UpdateArticleStockCommand(String art_id, Integer stock) {
         this.art_id = art_id;
-        this.name = name;
         this.stock = stock;
     }
 
     public String getArt_id() {
         return art_id;
-    }
-
-    public String getName() {
-        return name;
     }
 
     public Integer getStock() {

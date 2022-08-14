@@ -1,27 +1,36 @@
 package com.manriquecms.warehouse.domain.model.product;
 
+import io.swagger.annotations.ApiModelProperty;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.Calendar;
 
 @Entity
-public class ProductSale {
+public class ProductOrder {
     @Id
     @GeneratedValue(generator="system-uuid")
     @GenericGenerator(name="system-uuid", strategy = "uuid")
+    @ApiModelProperty(hidden = true)
     private String id;
 
     @Basic
     @Temporal(TemporalType.TIMESTAMP)
+    @ApiModelProperty(hidden = true)
     private java.util.Calendar createDate;
 
     private String productId;
 
     private Integer quantity;
 
-    public ProductSale() {
+    public ProductOrder () {
         this.createDate = Calendar.getInstance();
+    }
+
+    public ProductOrder (String productId, Integer quantity) {
+        this.createDate = Calendar.getInstance();
+        this.productId = productId;
+        this.quantity = quantity;
     }
 
     public String getId() {

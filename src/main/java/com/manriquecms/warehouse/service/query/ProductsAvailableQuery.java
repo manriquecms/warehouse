@@ -5,6 +5,7 @@ import com.manriquecms.warehouse.domain.model.product.Product;
 import com.manriquecms.warehouse.domain.model.product.ProductBuildable;
 import com.manriquecms.warehouse.infrastructure.repository.article.ArticleRepository;
 import com.manriquecms.warehouse.infrastructure.repository.article.ProductRepository;
+import com.manriquecms.warehouse.service.exception.ProductNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.jms.artemis.ArtemisNoOpBindingRegistry;
 import org.springframework.stereotype.Service;
@@ -33,7 +34,8 @@ public class ProductsAvailableQuery {
     }
 
     public ProductBuildable getAvailableProduct(String productId) {
-        Product product = productRepository.findById(productId).orElseThrow();
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new ProductNotFoundException(productId));
         return new ProductBuildable(
                 product,
                 howManyItemsCanIBuildOfProduct(product)

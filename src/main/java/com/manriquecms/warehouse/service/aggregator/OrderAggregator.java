@@ -1,14 +1,17 @@
 package com.manriquecms.warehouse.service.aggregator;
 
 import com.manriquecms.warehouse.domain.model.article.Article;
-import com.manriquecms.warehouse.domain.model.article.exceptions.NotEnoughStockToReduce;
-import com.manriquecms.warehouse.domain.model.product.Product;
+import com.manriquecms.warehouse.domain.model.article.exceptions.InitializingStockNegativeNotAllowedException;
+import com.manriquecms.warehouse.domain.model.article.exceptions.NotEnoughStockToReduceException;
 import com.manriquecms.warehouse.domain.model.product.ProductBuildable;
 import com.manriquecms.warehouse.domain.model.product.ProductOrder;
+import com.manriquecms.warehouse.domain.model.product.ProductPart;
 import com.manriquecms.warehouse.infrastructure.repository.article.ArticleRepository;
 import com.manriquecms.warehouse.infrastructure.repository.product.ProductOrderRepository;
 import com.manriquecms.warehouse.service.command.CreateOrderCommand;
-import com.manriquecms.warehouse.service.query.ArticlesQuery;
+import com.manriquecms.warehouse.service.command.UpdateArticleStockCommand;
+import com.manriquecms.warehouse.service.exception.OrderWithNotEnoughStockException;
+import com.manriquecms.warehouse.service.query.ArticleQuery;
 import com.manriquecms.warehouse.service.query.ProductsAvailableQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,9 +25,12 @@ public class OrderAggregator {
     @Autowired
     ProductsAvailableQuery productsAvailableQuery;
     @Autowired
-    ArticlesQuery articlesQuery;
+    ArticleQuery articleQuery;
+    @Autowired
+    ArticleAggregator articleAggregator;
 
-    public Product handleCreateOrderCommand(CreateOrderCommand createOrderCommand) {
+    public ProductOrder handleCreateOrderCommand(CreateOrderCommand createOrderCommand)
+            throws OrderWithNotEnoughStockException {
         ProductOrder productOrder = new ProductOrder(
                 createOrderCommand.getProductId(),
                 createOrderCommand.getQuantity()
@@ -32,28 +38,34 @@ public class OrderAggregator {
 
         ProductBuildable productStock = productsAvailableQuery.getAvailableProduct(productOrder.getProductId());
 
-
-        if (productStock.getQuantity() >= productOrder.getQuantity()) {
+        if (haveEnoughStockForProduct(productStock, productOrder)) {
             productOrderRepository.save(productOrder);
-
             productStock.getProduct().getContain_articles().stream().forEach(productPart -> {
-                Article article = articlesQuery.getArticleById(productPart.getArt_id());
-                try {
-                    article.reduceStock(productPart.getAmount_of());
-                } catch (NotEnoughStockToReduce e) {
-                    throw new RuntimeException(e);
-                }
-                articleRepository.save(article);
+                reduceAndSaveArticleStock(productPart, productOrder.getQuantity());
+
             });
+        } else {
+            throw new OrderWithNotEnoughStockException();
         }
 
-        return productStock.getProduct();
+        return productOrder;
     }
 
-    private Boolean haveEnoughStockForProduct(ProductOrder productOrder) {
-        ProductBuildable productStock = productsAvailableQuery.getAvailableProduct(productOrder.getProductId());
+    private Boolean haveEnoughStockForProduct(ProductBuildable productStock, ProductOrder productOrder) {
         return productStock.getQuantity() >= productOrder.getQuantity();
     }
 
+    private Article reduceAndSaveArticleStock(ProductPart productPart, Integer quantityProducts)
+            throws InitializingStockNegativeNotAllowedException {
+        Article article = articleQuery.getArticleById(productPart.getArt_id());
+
+        article.reduceStock(productPart.getAmount_of() * quantityProducts);
+
+        UpdateArticleStockCommand updateArticleStockCommand =
+                new UpdateArticleStockCommand(article.getId(), article.getStock());
+        articleAggregator.handleUpdateArticleStockCommand(updateArticleStockCommand);
+
+        return article;
+    }
 
 }

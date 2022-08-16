@@ -13,4 +13,6 @@ public class ProductAggregator {
         this.productRepository = productRepository;
     }
 
+
+    //TODO Create article, update article
 }

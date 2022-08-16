@@ -1,18 +1,24 @@
 package com.manriquecms.warehouse.service.command;
 
+import io.swagger.annotations.ApiModelProperty;
+
 public class UpdateArticleCommand {
-    private String art_id;
+    @ApiModelProperty(hidden = true)
+    private String articleId;
     private String name;
     private Integer stock;
 
-    public UpdateArticleCommand(String art_id, String name, Integer stock) {
-        this.art_id = art_id;
+    public UpdateArticleCommand(String name, Integer stock) {
         this.name = name;
         this.stock = stock;
     }
 
-    public String getArt_id() {
-        return art_id;
+    public String getArticleId() {
+        return articleId;
+    }
+
+    public void setArticleId(String articleId) {
+        this.articleId = articleId;
     }
 
     public String getName() {

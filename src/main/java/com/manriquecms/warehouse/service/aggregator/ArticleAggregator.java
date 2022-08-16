@@ -1,15 +1,15 @@
 package com.manriquecms.warehouse.service.aggregator;
 
 import com.manriquecms.warehouse.domain.model.article.Article;
-import com.manriquecms.warehouse.domain.model.article.exceptions.InitializingStockNegativeNotAllowed;
-import com.manriquecms.warehouse.domain.model.product.ProductOrder;
+import com.manriquecms.warehouse.domain.model.article.exceptions.InitializingStockNegativeNotAllowedException;
 import com.manriquecms.warehouse.infrastructure.repository.article.ArticleRepository;
+import com.manriquecms.warehouse.service.command.CreateArticleCommand;
 import com.manriquecms.warehouse.service.command.UpdateArticleCommand;
 import com.manriquecms.warehouse.service.command.UpdateArticleStockCommand;
+import com.manriquecms.warehouse.service.exception.ArticleAlreadyExistsException;
+import com.manriquecms.warehouse.service.exception.ArticleNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class ArticleAggregator {
@@ -21,8 +21,8 @@ public class ArticleAggregator {
     }
 
     public Article handleUpdateArticleStockCommand(UpdateArticleStockCommand updateArticleStockCommand)
-            throws InitializingStockNegativeNotAllowed {
-        Article article = articleRepository.findById(updateArticleStockCommand.getArt_id()).orElseThrow();
+            throws InitializingStockNegativeNotAllowedException {
+        Article article = articleRepository.findById(updateArticleStockCommand.getArticleId()).orElseThrow();
         article.assignStock(updateArticleStockCommand.getStock());
 
         articleRepository.save(article);
@@ -32,25 +32,33 @@ public class ArticleAggregator {
 
     public Article handleUpdateArticleCommand(UpdateArticleCommand updateArticleCommand) {
         Article article = new Article(
-                updateArticleCommand.getArt_id(),
+                updateArticleCommand.getArticleId(),
                 updateArticleCommand.getName(),
                 updateArticleCommand.getStock()
         );
 
-        articleRepository.save(article);
+        if (articleRepository.existsById(article.getId())) {
+            articleRepository.save(article);
+        } else {
+            throw new ArticleNotFoundException(article.getId());
+        }
 
         return article;
     }
 
-    //TODO
-    /*public List<Article> createArticles (List<Article> articles) {
-        articles.stream().forEach(article -> createArticle(article));
-        return articles;
-    }
+    public Article handleCreateArticleCommand(CreateArticleCommand createArticleCommand) {
+        Article article = new Article(
+                createArticleCommand.getArt_id(),
+                createArticleCommand.getName(),
+                createArticleCommand.getStock()
+        );
+        if (!articleRepository.existsById(article.getId())) {
+            articleRepository.save(article);
+        } else {
+            throw new ArticleAlreadyExistsException(article.getId());
+        }
 
-    public Article createArticle (Article article) {
-        articleRepository.save(article);
         return article;
-    }*/
+    }
 
 }

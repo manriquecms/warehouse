@@ -4,6 +4,7 @@ import com.manriquecms.warehouse.domain.model.product.Product;
 import com.manriquecms.warehouse.domain.model.product.ProductOrder;
 import com.manriquecms.warehouse.service.aggregator.OrderAggregator;
 import com.manriquecms.warehouse.service.command.CreateOrderCommand;
+import com.manriquecms.warehouse.service.exception.OrderWithNotEnoughStockException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,7 +20,8 @@ public class OrderController {
     OrderAggregator orderAggregator;
 
     @RequestMapping(value = "/order", method = RequestMethod.POST)
-    public List<Product> orderProducts(@RequestBody List<CreateOrderCommand> createOrderCommands){
+    public List<ProductOrder> orderProducts(@RequestBody List<CreateOrderCommand> createOrderCommands)
+            throws OrderWithNotEnoughStockException {
         return createOrderCommands.stream().map(createOrderCommand -> {
             return orderAggregator.handleCreateOrderCommand(createOrderCommand);
         }).collect(Collectors.toList());

@@ -11,11 +11,11 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 @Service
-public class ArticlesQuery {
+public class ArticleQuery {
     @Autowired
     private ArticleRepository articleRepository;
 
-    public ArticlesQuery(){}
+    public ArticleQuery(){}
 
     public List<Article> getAllArticles(){
         return StreamSupport.stream(articleRepository.findAll().spliterator(),false)

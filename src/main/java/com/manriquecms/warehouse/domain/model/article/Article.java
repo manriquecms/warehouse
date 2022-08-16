@@ -1,12 +1,13 @@
 package com.manriquecms.warehouse.domain.model.article;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.manriquecms.warehouse.domain.model.article.exceptions.InitializingStockNegativeNotAllowed;
-import com.manriquecms.warehouse.domain.model.article.exceptions.NotEnoughStockToReduce;
-import com.manriquecms.warehouse.domain.model.article.exceptions.NotNumberFormatForStockQuantity;
+import com.manriquecms.warehouse.domain.model.article.exceptions.InitializingStockNegativeNotAllowedException;
+import com.manriquecms.warehouse.domain.model.article.exceptions.NotEnoughStockToReduceException;
+import com.manriquecms.warehouse.domain.model.article.exceptions.NotNumberFormatForStockQuantityException;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import java.util.Objects;
 
 @Entity
 public class Article {
@@ -50,30 +51,30 @@ public class Article {
     }
 
     public void setStock(String stock)
-            throws InitializingStockNegativeNotAllowed, NotNumberFormatForStockQuantity {
+            throws InitializingStockNegativeNotAllowedException, NotNumberFormatForStockQuantityException {
         this.stock = assignStock(stock);
     }
 
     public Integer assignStock(String quantity)
-            throws InitializingStockNegativeNotAllowed, NotNumberFormatForStockQuantity {
+            throws InitializingStockNegativeNotAllowedException, NotNumberFormatForStockQuantityException {
         try {
             return assignStock(Integer.parseInt(quantity));
         } catch (NumberFormatException exception) {
-            throw new NotNumberFormatForStockQuantity();
+            throw new NotNumberFormatForStockQuantityException();
         }
     }
 
-    public Integer assignStock(Integer quantity) throws InitializingStockNegativeNotAllowed {
+    public Integer assignStock(Integer quantity) throws InitializingStockNegativeNotAllowedException {
         if (quantity >= 0) {
             return quantity;
         } else {
-            throw new InitializingStockNegativeNotAllowed();
+            throw new InitializingStockNegativeNotAllowedException();
         }
     }
 
-    public void reduceStock(Integer units) throws NotEnoughStockToReduce {
+    public void reduceStock(Integer units) throws NotEnoughStockToReduceException {
         if (units > this.stock) {
-            throw new NotEnoughStockToReduce(units, this.stock);
+            throw new NotEnoughStockToReduceException(units, this.stock);
         } else {
             this.stock -= units;
         }
@@ -81,5 +82,18 @@ public class Article {
 
     public void incrementStock(Integer units){
         this.stock += units;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Article article = (Article) o;
+        return id.equals(article.id) && name.equals(article.name) && stock.equals(article.stock);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, stock);
     }
 }

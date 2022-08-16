@@ -29,9 +29,11 @@ public class InitialDataLoader {
                 logger.info("Initialize process activated");
                 List<Article> articles = inventoryInitializer.readArticlesFromJson();
                 articles.stream().forEach(a -> articleRepository.save(a));
+                logger.info(String.format("Loaded %d articles", articles.size()));
 
                 List<Product> products = catalogInitializer.readProductsFromJson();
                 products.stream().forEach(p -> productRepository.save(p));
+                logger.info(String.format("Loaded %d products", products.size()));
 
             }
         };

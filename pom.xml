@@ -19,6 +19,7 @@
 		<moneta.version>1.4.2</moneta.version>
 		<springfox.version>3.0.0</springfox.version>
 		<dockerfile.maven.version>1.4.13</dockerfile.maven.version>
+		<lombok.version>1.18.24</lombok.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -64,6 +65,12 @@
 			<groupId>io.springfox</groupId>
 			<artifactId>springfox-boot-starter</artifactId>
 			<version>${springfox.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>${lombok.version}</version>
 		</dependency>
 	</dependencies>
 

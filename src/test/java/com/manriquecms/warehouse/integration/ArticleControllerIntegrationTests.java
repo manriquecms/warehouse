@@ -1,7 +1,7 @@
 package com.manriquecms.warehouse.integration;
 
 import com.manriquecms.warehouse.WarehouseApplication;
-import com.manriquecms.warehouse.domain.model.article.Article;
+import com.manriquecms.warehouse.domain.model.Article;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

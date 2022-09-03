@@ -34,6 +34,19 @@ We're managing a Warehouse composed of:
   - price
   - articles<id, quantity>
 
+## Model
+### MVP
+Article (id*, name, stock)
+
+Product (name*, price)
+
+ProductArticle (product_name*, article_id*, amount)
+
+### Orders functionality
+Order (@id*, @create_date, fee)
+
+OrderProduct (order_id*, product_id*, amount)
+
 ## First functionality to develop
 Considering an API Rest solution
 - Get Product: GET - list all products available, in other words, buildable according the current Inventory

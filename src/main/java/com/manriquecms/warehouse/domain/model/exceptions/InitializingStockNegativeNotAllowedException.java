@@ -1,4 +1,4 @@
-package com.manriquecms.warehouse.domain.model.article.exceptions;
+package com.manriquecms.warehouse.domain.model.exceptions;
 
 public class InitializingStockNegativeNotAllowedException extends RuntimeException {
     private static final String STOCK_NEGATIVE_NOT_ALLOWED =

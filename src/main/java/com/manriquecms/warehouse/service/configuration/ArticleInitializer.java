@@ -3,7 +3,7 @@ package com.manriquecms.warehouse.service.configuration;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.manriquecms.warehouse.domain.model.article.Article;
+import com.manriquecms.warehouse.domain.model.Article;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,8 +14,8 @@ import java.io.InputStream;
 import java.util.List;
 
 @Service
-public class InventoryInitializer {
-    private static Logger logger = LoggerFactory.getLogger(InventoryInitializer.class);
+public class ArticleInitializer {
+    private static Logger logger = LoggerFactory.getLogger(ArticleInitializer.class);
     @Value("${warehouse.inventory.json.path}")
     private String inventoryJsonPath;
     @Value("${warehouse.inventory.root.value}")

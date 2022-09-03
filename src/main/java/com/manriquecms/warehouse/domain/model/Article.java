@@ -1,20 +1,29 @@
-package com.manriquecms.warehouse.domain.model.article;
+package com.manriquecms.warehouse.domain.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.manriquecms.warehouse.domain.model.article.exceptions.InitializingStockNegativeNotAllowedException;
-import com.manriquecms.warehouse.domain.model.article.exceptions.NotEnoughStockToReduceException;
-import com.manriquecms.warehouse.domain.model.article.exceptions.NotNumberFormatForStockQuantityException;
+import com.manriquecms.warehouse.domain.model.exceptions.InitializingStockNegativeNotAllowedException;
+import com.manriquecms.warehouse.domain.model.exceptions.NotEnoughStockToReduceException;
+import com.manriquecms.warehouse.domain.model.exceptions.NotNumberFormatForStockQuantityException;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
-@Entity
+@Entity(name = "Article")
+@Table(name = "article")
 public class Article {
     @Id
     private String id;
     private String name;
     private Integer stock;
+
+    @OneToMany(
+            mappedBy = "article",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<ProductArticle> products = new ArrayList<>();
 
     public Article() {
     }
@@ -53,6 +62,14 @@ public class Article {
     public void setStock(String stock)
             throws InitializingStockNegativeNotAllowedException, NotNumberFormatForStockQuantityException {
         this.stock = assignStock(stock);
+    }
+
+    public List<ProductArticle> getProducts() {
+        return products;
+    }
+
+    public void setProducts(List<ProductArticle> products) {
+        this.products = products;
     }
 
     public Integer assignStock(String quantity)

@@ -1,8 +1,8 @@
 package com.manriquecms.warehouse.unit;
 
-import com.manriquecms.warehouse.domain.model.article.Article;
-import com.manriquecms.warehouse.domain.model.article.exceptions.NotEnoughStockToReduceException;
-import com.manriquecms.warehouse.domain.model.article.exceptions.NotNumberFormatForStockQuantityException;
+import com.manriquecms.warehouse.domain.model.Article;
+import com.manriquecms.warehouse.domain.model.exceptions.NotEnoughStockToReduceException;
+import com.manriquecms.warehouse.domain.model.exceptions.NotNumberFormatForStockQuantityException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

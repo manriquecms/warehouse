@@ -1,10 +1,12 @@
 package com.manriquecms.warehouse.service.query;
 
-import com.manriquecms.warehouse.domain.model.product.Product;
-import com.manriquecms.warehouse.infrastructure.repository.article.ProductRepository;
+import com.manriquecms.warehouse.domain.dto.ProductDto;
+import com.manriquecms.warehouse.domain.model.Product;
+import com.manriquecms.warehouse.infrastructure.repository.ProductRepository;
 import com.manriquecms.warehouse.service.exception.ProductNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -15,13 +17,14 @@ public class ProductQuery {
     @Autowired
     ProductRepository productRepository;
 
-    public List<Product> getAllProducts(){
+    public List<ProductDto> getAllProducts(){
         return StreamSupport.stream(productRepository.findAll().spliterator(),false)
+                .map(p -> ProductDto.fromProduct(p))
                 .collect(Collectors.toList());
     }
 
-    public Product getProductById(String name){
-        return productRepository.findById(name)
-                .orElseThrow(() -> new ProductNotFoundException(name));
+    public ProductDto getProductById(String name){
+        return ProductDto.fromProduct(productRepository.findById(name)
+                .orElseThrow(() -> new ProductNotFoundException(name)));
     }
 }

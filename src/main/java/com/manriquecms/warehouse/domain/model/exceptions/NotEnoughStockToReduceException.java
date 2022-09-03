@@ -1,4 +1,4 @@
-package com.manriquecms.warehouse.domain.model.article.exceptions;
+package com.manriquecms.warehouse.domain.model.exceptions;
 
 public class NotEnoughStockToReduceException extends RuntimeException {
     private static final String NOT_ENOUGH_STOCK_TO_REDUCE =

@@ -1,6 +1,7 @@
 package com.manriquecms.warehouse.infrastructure.rest;
 
-import com.manriquecms.warehouse.domain.model.article.Article;
+import com.manriquecms.warehouse.domain.dto.ArticleDto;
+import com.manriquecms.warehouse.domain.model.Article;
 import com.manriquecms.warehouse.service.aggregator.ArticleAggregator;
 import com.manriquecms.warehouse.service.command.CreateArticleCommand;
 import com.manriquecms.warehouse.service.command.UpdateArticleCommand;
@@ -22,12 +23,12 @@ public class ArticleController {
 
     //@RequestMapping(value = "/articles", method = RequestMethod.GET)
     @RequestMapping(value = "/articles", method = RequestMethod.GET)
-    public List<Article> getAllArticles(){
+    public List<ArticleDto> getAllArticles(){
         return articleQuery.getAllArticles();
     }
 
     @RequestMapping(value = "/articles/{id}", method = RequestMethod.GET)
-    public Article getArticleById(@PathVariable String id) throws ArticleNotFoundException {
+    public ArticleDto getArticleById(@PathVariable String id) throws ArticleNotFoundException {
         return articleQuery.getArticleById(id);
     }
 
@@ -43,4 +44,5 @@ public class ArticleController {
         updateArticleCommand.setArticleId(id);
         return articleAggregator.handleUpdateArticleCommand(updateArticleCommand);
     }
+
 }

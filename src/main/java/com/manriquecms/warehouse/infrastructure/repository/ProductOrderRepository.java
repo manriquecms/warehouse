@@ -1,6 +1,6 @@
-package com.manriquecms.warehouse.infrastructure.repository.product;
+package com.manriquecms.warehouse.infrastructure.repository;
 
-import com.manriquecms.warehouse.domain.model.product.ProductOrder;
+import com.manriquecms.warehouse.domain.model.ProductOrder;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

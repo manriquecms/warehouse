@@ -1,6 +1,7 @@
 package com.manriquecms.warehouse.infrastructure.rest;
 
-import com.manriquecms.warehouse.domain.model.product.Product;
+import com.manriquecms.warehouse.domain.dto.ProductDto;
+import com.manriquecms.warehouse.domain.model.Product;
 import com.manriquecms.warehouse.service.exception.ProductNotFoundException;
 import com.manriquecms.warehouse.service.query.ProductQuery;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,12 +15,13 @@ public class ProductController {
     ProductQuery productQuery;
 
     @RequestMapping(value = "/products", method = RequestMethod.GET)
-    public List<Product> getAllProducts() {
+    public List<ProductDto> getAllProducts() {
+        productQuery.getAllProducts();
         return productQuery.getAllProducts();
     }
 
     @RequestMapping(value = "/products/{id}", method = RequestMethod.GET)
-    public Product getProductById(@PathVariable String id) throws ProductNotFoundException {
+    public ProductDto getProductById(@PathVariable String id) throws ProductNotFoundException {
         return productQuery.getProductById(id);
     }
 

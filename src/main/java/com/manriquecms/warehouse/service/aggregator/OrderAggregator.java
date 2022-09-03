@@ -1,22 +1,22 @@
 package com.manriquecms.warehouse.service.aggregator;
 
-import com.manriquecms.warehouse.domain.model.article.Article;
-import com.manriquecms.warehouse.domain.model.article.exceptions.InitializingStockNegativeNotAllowedException;
-import com.manriquecms.warehouse.domain.model.article.exceptions.NotEnoughStockToReduceException;
-import com.manriquecms.warehouse.domain.model.product.ProductBuildable;
-import com.manriquecms.warehouse.domain.model.product.ProductOrder;
-import com.manriquecms.warehouse.domain.model.product.ProductPart;
-import com.manriquecms.warehouse.infrastructure.repository.article.ArticleRepository;
-import com.manriquecms.warehouse.infrastructure.repository.product.ProductOrderRepository;
-import com.manriquecms.warehouse.service.command.CreateOrderCommand;
-import com.manriquecms.warehouse.service.command.UpdateArticleStockCommand;
-import com.manriquecms.warehouse.service.exception.OrderWithNotEnoughStockException;
+import com.manriquecms.warehouse.infrastructure.repository.ArticleRepository;
+import com.manriquecms.warehouse.infrastructure.repository.ProductOrderRepository;
 import com.manriquecms.warehouse.service.query.ArticleQuery;
 import com.manriquecms.warehouse.service.query.ProductsAvailableQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
 
 @Service
+@Transactional(
+        isolation = Isolation.READ_COMMITTED,
+        propagation = Propagation.SUPPORTS,
+        readOnly = false,
+        timeout = 30)
 public class OrderAggregator {
     @Autowired
     ProductOrderRepository productOrderRepository;
@@ -29,14 +29,14 @@ public class OrderAggregator {
     @Autowired
     ArticleAggregator articleAggregator;
 
-    public ProductOrder handleCreateOrderCommand(CreateOrderCommand createOrderCommand)
+    /*public ProductOrder handleCreateOrderCommand(CreateOrderCommand createOrderCommand)
             throws OrderWithNotEnoughStockException {
         ProductOrder productOrder = new ProductOrder(
                 createOrderCommand.getProductId(),
                 createOrderCommand.getQuantity()
         );
 
-        ProductBuildable productStock = productsAvailableQuery.getAvailableProduct(productOrder.getProductId());
+        ProductBuildableDto productStock = productsAvailableQuery.getAvailableProduct(productOrder.getProductId());
 
         if (haveEnoughStockForProduct(productStock, productOrder)) {
             productOrderRepository.save(productOrder);
@@ -51,7 +51,7 @@ public class OrderAggregator {
         return productOrder;
     }
 
-    private Boolean haveEnoughStockForProduct(ProductBuildable productStock, ProductOrder productOrder) {
+    private Boolean haveEnoughStockForProduct(ProductBuildableDto productStock, ProductOrder productOrder) {
         return productStock.getQuantity() >= productOrder.getQuantity();
     }
 
@@ -66,6 +66,6 @@ public class OrderAggregator {
         articleAggregator.handleUpdateArticleStockCommand(updateArticleStockCommand);
 
         return article;
-    }
+    }*/
 
 }

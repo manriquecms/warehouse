@@ -1,6 +1,6 @@
 package com.manriquecms.warehouse.infrastructure.rest;
 
-import com.manriquecms.warehouse.domain.model.product.ProductBuildable;
+import com.manriquecms.warehouse.domain.dto.ProductBuildableDto;
 import com.manriquecms.warehouse.service.query.ProductsAvailableQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,7 +15,7 @@ public class StockController {
     ProductsAvailableQuery productsAvailableQuery;
 
     @RequestMapping(value = "/stock", method = RequestMethod.GET)
-    public List<ProductBuildable> getProductStock(){
+    public List<ProductBuildableDto> getProductStock(){
         return productsAvailableQuery.getAvailableProducts();
     }
 }

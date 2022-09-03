@@ -1,8 +1,8 @@
 package com.manriquecms.warehouse.service.aggregator;
 
-import com.manriquecms.warehouse.domain.model.article.Article;
-import com.manriquecms.warehouse.domain.model.article.exceptions.InitializingStockNegativeNotAllowedException;
-import com.manriquecms.warehouse.infrastructure.repository.article.ArticleRepository;
+import com.manriquecms.warehouse.domain.model.Article;
+import com.manriquecms.warehouse.domain.model.exceptions.InitializingStockNegativeNotAllowedException;
+import com.manriquecms.warehouse.infrastructure.repository.ArticleRepository;
 import com.manriquecms.warehouse.service.command.CreateArticleCommand;
 import com.manriquecms.warehouse.service.command.UpdateArticleCommand;
 import com.manriquecms.warehouse.service.command.UpdateArticleStockCommand;
@@ -10,8 +10,16 @@ import com.manriquecms.warehouse.service.exception.ArticleAlreadyExistsException
 import com.manriquecms.warehouse.service.exception.ArticleNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional(
+        isolation = Isolation.READ_COMMITTED,
+        propagation = Propagation.SUPPORTS,
+        readOnly = false,
+        timeout = 30)
 public class ArticleAggregator {
     @Autowired
     private ArticleRepository articleRepository;

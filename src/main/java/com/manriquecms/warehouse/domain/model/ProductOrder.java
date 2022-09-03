@@ -1,4 +1,4 @@
-package com.manriquecms.warehouse.domain.model.product;
+package com.manriquecms.warehouse.domain.model;
 
 import io.swagger.annotations.ApiModelProperty;
 import org.hibernate.annotations.GenericGenerator;
@@ -18,6 +18,7 @@ public class ProductOrder {
     @Temporal(TemporalType.TIMESTAMP)
     @ApiModelProperty(hidden = true)
     private java.util.Calendar createDate;
+//Instance && Time
 
     private String productId;
 

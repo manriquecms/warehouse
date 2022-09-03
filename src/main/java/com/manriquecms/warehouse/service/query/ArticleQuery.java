@@ -1,7 +1,6 @@
 package com.manriquecms.warehouse.service.query;
 
 import com.manriquecms.warehouse.domain.dto.ArticleDto;
-import com.manriquecms.warehouse.domain.model.Article;
 import com.manriquecms.warehouse.infrastructure.repository.ArticleRepository;
 import com.manriquecms.warehouse.service.exception.ArticleNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;

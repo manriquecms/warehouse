@@ -1,7 +1,6 @@
 package com.manriquecms.warehouse.infrastructure.rest;
 
 import com.manriquecms.warehouse.domain.dto.ProductDto;
-import com.manriquecms.warehouse.domain.model.Product;
 import com.manriquecms.warehouse.service.exception.ProductNotFoundException;
 import com.manriquecms.warehouse.service.query.ProductQuery;
 import org.springframework.beans.factory.annotation.Autowired;

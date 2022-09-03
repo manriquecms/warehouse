@@ -20,21 +20,20 @@ public class ProductsAvailableQuery {
     @Transactional
     public List<ProductBuildableDto> getAvailableProducts() {
         return StreamSupport.stream(productRepository.findAll().spliterator(),false)
-                .map(p -> {
-                    return new ProductBuildableDto(
-                            p.getName(),
-                            howManyItemsCanIBuildOfProduct(p)
-                    );
-                }).collect(Collectors.toList());
+                .map(p -> ProductBuildableDto.builder()
+                        .productName(p.getName())
+                        .quantity(howManyItemsCanIBuildOfProduct(p))
+                        .build()
+                ).collect(Collectors.toList());
     }
 
     public ProductBuildableDto getAvailableProduct(String productId) {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new ProductNotFoundException(productId));
-        return new ProductBuildableDto(
-                product.getName(),
-                howManyItemsCanIBuildOfProduct(product)
-        );
+        return ProductBuildableDto.builder()
+                .productName(product.getName())
+                .quantity(howManyItemsCanIBuildOfProduct(product))
+                .build();
     }
 
     private Integer howManyItemsCanIBuildOfProduct(Product product){

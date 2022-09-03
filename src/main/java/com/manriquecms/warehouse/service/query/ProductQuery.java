@@ -1,12 +1,10 @@
 package com.manriquecms.warehouse.service.query;
 
 import com.manriquecms.warehouse.domain.dto.ProductDto;
-import com.manriquecms.warehouse.domain.model.Product;
 import com.manriquecms.warehouse.infrastructure.repository.ProductRepository;
 import com.manriquecms.warehouse.service.exception.ProductNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;

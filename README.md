@@ -45,7 +45,7 @@ ProductArticle (product_name*, article_id*, amount)
 ### Orders functionality
 Order (@id*, @create_date, fee)
 
-OrderProduct (order_id*, product_id*, amount)
+OrderProduct (order_id*, product_name*, amount)
 
 ## First functionality to develop
 Considering an API Rest solution

@@ -1,14 +1,26 @@
 package com.manriquecms.warehouse.service.aggregator;
 
+import com.manriquecms.warehouse.domain.dto.OrderDto;
+import com.manriquecms.warehouse.domain.dto.ProductAvailableDto;
+import com.manriquecms.warehouse.domain.model.OrderProduct;
+import com.manriquecms.warehouse.domain.model.Product;
+import com.manriquecms.warehouse.domain.model.WarehouseOrder;
 import com.manriquecms.warehouse.infrastructure.repository.ArticleRepository;
-import com.manriquecms.warehouse.infrastructure.repository.ProductOrderRepository;
+import com.manriquecms.warehouse.infrastructure.repository.OrderRepository;
+import com.manriquecms.warehouse.infrastructure.repository.ProductRepository;
+import com.manriquecms.warehouse.service.command.CreateOrderCommand;
+import com.manriquecms.warehouse.service.exception.OrderWithNotEnoughStockException;
 import com.manriquecms.warehouse.service.query.ArticleQuery;
 import com.manriquecms.warehouse.service.query.ProductsAvailableQuery;
+import org.javamoney.moneta.Money;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -19,9 +31,11 @@ import org.springframework.transaction.annotation.Transactional;
         timeout = 30)
 public class OrderAggregator {
     @Autowired
-    ProductOrderRepository productOrderRepository;
+    OrderRepository orderRepository;
     @Autowired
     ArticleRepository articleRepository;
+    @Autowired
+    ProductRepository productRepository;
     @Autowired
     ProductsAvailableQuery productsAvailableQuery;
     @Autowired
@@ -29,43 +43,28 @@ public class OrderAggregator {
     @Autowired
     ArticleAggregator articleAggregator;
 
-    /*public ProductOrder handleCreateOrderCommand(CreateOrderCommand createOrderCommand)
+    public OrderDto handleCreateOrderCommand(List<CreateOrderCommand> createOrderCommands)
             throws OrderWithNotEnoughStockException {
-        ProductOrder productOrder = new ProductOrder(
-                createOrderCommand.getProductId(),
-                createOrderCommand.getQuantity()
+        WarehouseOrder warehouseOrder = orderRepository.save(new WarehouseOrder());
+
+        createOrderCommands.stream().forEach(createOrderCommand ->
+                {
+                    Integer productQuantity = createOrderCommand.getQuantity();
+                    Product product = productRepository.findById(createOrderCommand.getProductId()).orElseThrow();
+                    ProductAvailableDto available = productsAvailableQuery.getAvailableProduct(product.getName());
+                    if (available.getQuantity() >= productQuantity){
+                        warehouseOrder.addProduct(product,productQuantity);
+                        product.reduceStockForArticles(productQuantity);
+                        productRepository.save(product);
+                        warehouseOrder.sumFee(Money.parse(product.getPrice()).multiply(productQuantity).toString());
+                    } else {
+                        throw new OrderWithNotEnoughStockException();
+                    }
+                }
         );
 
-        ProductBuildableDto productStock = productsAvailableQuery.getAvailableProduct(productOrder.getProductId());
+        orderRepository.save(warehouseOrder);
 
-        if (haveEnoughStockForProduct(productStock, productOrder)) {
-            productOrderRepository.save(productOrder);
-            productStock.getProduct().getContain_articles().stream().forEach(productPart -> {
-                reduceAndSaveArticleStock(productPart, productOrder.getQuantity());
-
-            });
-        } else {
-            throw new OrderWithNotEnoughStockException();
-        }
-
-        return productOrder;
+        return OrderDto.fromOrder(warehouseOrder);
     }
-
-    private Boolean haveEnoughStockForProduct(ProductBuildableDto productStock, ProductOrder productOrder) {
-        return productStock.getQuantity() >= productOrder.getQuantity();
-    }
-
-    private Article reduceAndSaveArticleStock(ProductPart productPart, Integer quantityProducts)
-            throws InitializingStockNegativeNotAllowedException {
-        Article article = articleQuery.getArticleById(productPart.getArt_id());
-
-        article.reduceStock(productPart.getAmount_of() * quantityProducts);
-
-        UpdateArticleStockCommand updateArticleStockCommand =
-                new UpdateArticleStockCommand(article.getId(), article.getStock());
-        articleAggregator.handleUpdateArticleStockCommand(updateArticleStockCommand);
-
-        return article;
-    }*/
-
 }

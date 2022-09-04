@@ -1,6 +1,6 @@
 package com.manriquecms.warehouse.service.query;
 
-import com.manriquecms.warehouse.domain.dto.ProductBuildableDto;
+import com.manriquecms.warehouse.domain.dto.ProductAvailableDto;
 import com.manriquecms.warehouse.domain.model.Product;
 import com.manriquecms.warehouse.infrastructure.repository.ProductRepository;
 import com.manriquecms.warehouse.service.exception.ProductNotFoundException;
@@ -18,19 +18,19 @@ public class ProductsAvailableQuery {
     ProductRepository productRepository;
 
     @Transactional
-    public List<ProductBuildableDto> getAvailableProducts() {
+    public List<ProductAvailableDto> getAvailableProducts() {
         return StreamSupport.stream(productRepository.findAll().spliterator(),false)
-                .map(p -> ProductBuildableDto.builder()
+                .map(p -> ProductAvailableDto.builder()
                         .productName(p.getName())
                         .quantity(howManyItemsCanIBuildOfProduct(p))
                         .build()
                 ).collect(Collectors.toList());
     }
 
-    public ProductBuildableDto getAvailableProduct(String productId) {
+    public ProductAvailableDto getAvailableProduct(String productId) {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new ProductNotFoundException(productId));
-        return ProductBuildableDto.builder()
+        return ProductAvailableDto.builder()
                 .productName(product.getName())
                 .quantity(howManyItemsCanIBuildOfProduct(product))
                 .build();

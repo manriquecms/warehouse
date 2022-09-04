@@ -22,6 +22,13 @@ public class Product {
     )
     private List<ProductArticle> articles = new ArrayList<>();
 
+    @OneToMany(
+            mappedBy = "product",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<OrderProduct> warehouseOrder = new ArrayList<>();
+
     public Product() {
         price = Money.of(1, "EUR").toString();
     }
@@ -47,6 +54,14 @@ public class Product {
         this.price = price;
     }
 
+    public List<OrderProduct> getWarehouseOrder() {
+        return warehouseOrder;
+    }
+
+    public void setWarehouseOrder(List<OrderProduct> warehouseOrder) {
+        this.warehouseOrder = warehouseOrder;
+    }
+
     public List<ProductArticle> getArticles() {
         return articles;
     }
@@ -56,16 +71,23 @@ public class Product {
         articles.add(productArticle);
     }
 
+    public void reduceStockForArticles (Integer productsAmount) {
+        articles.forEach(productArticle -> {
+            Integer stockToReduce = productArticle.getAmount() * productsAmount;
+            productArticle.getArticle().reduceStock(stockToReduce);
+        });
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Product product = (Product) o;
-        return name.equals(product.name) && price.equals(product.price) && articles.equals(product.articles);
+        return name.equals(product.name) && price.equals(product.price) && articles.equals(product.articles) && warehouseOrder.equals(product.warehouseOrder);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, price, articles);
+        return Objects.hash(name, price, articles, warehouseOrder);
     }
 }

@@ -1,12 +1,11 @@
 package com.manriquecms.warehouse.domain.dto;
 
-import com.manriquecms.warehouse.domain.model.Product;
 import lombok.Builder;
 import lombok.Data;
 
 @Data
 @Builder
-public class ProductBuildableDto {
+public class ProductAvailableDto {
     private String productName;
     private Integer quantity;
 }
